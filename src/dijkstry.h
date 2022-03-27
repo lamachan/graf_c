@@ -1,6 +1,8 @@
 #ifndef _DIJKSTRY_H_
 #define _DIJKSTRY_H_
 
+#include "graph.h"
+
 struct pq
 {
 	int *heap;

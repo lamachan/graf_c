@@ -1,6 +1,8 @@
 #ifndef _BFS_H_
 #define _BFS_H_
 
+#include "graph.h"
+
 typedef fifo_element
 {
 	int vertex;
