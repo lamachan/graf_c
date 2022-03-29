@@ -16,7 +16,7 @@ typedef struct fifo
 	fifo_element_t *back;
 } * fifo_t;
 
-enum colour{white, gray, black};
+typedef enum colour {white, gray, black} colour_t;
 
 fifo_t initialise_fifo();
 
@@ -30,7 +30,7 @@ void print_fifo(fifo_t q);
 
 void free_fifo(fifo_t q);
 
-double * bfs(graph_t g, int start_vertex);
+colour_t bfs(graph_t g, int start_vertex);
 
 int check_connectivity(graph_t g);
 
