@@ -1,4 +1,4 @@
-objects = main.o graph.o bfs.o dijkstry,o
+objects = main.o graph.o bfs.o dijkstry.o
 
 default: $(objects)
 	cc $(objects)

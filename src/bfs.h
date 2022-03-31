@@ -3,7 +3,7 @@
 
 #include "graph.h"
 
-typedef fifo_element
+typedef struct fifo_element
 {
 	int vertex;
 	struct fifo_element *next;

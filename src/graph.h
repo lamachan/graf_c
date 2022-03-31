@@ -1,6 +1,8 @@
 #ifndef _GRAPH_H_
 #define _GRAPH_H_
 
+#include<stdio.h>
+
 typedef struct graph
 {
 	double **matrix;

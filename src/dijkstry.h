@@ -3,7 +3,7 @@
 
 #include "graph.h"
 
-struct pq
+typedef struct pq
 {
 	int *heap;
 	int count;
@@ -11,7 +11,7 @@ struct pq
 	int *position;
 } * pq_t;
 
-struct path
+typedef struct path
 {
 	int *predecessor;
 	double *distance;
