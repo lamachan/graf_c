@@ -2,6 +2,7 @@
 #define _GRAPH_H_
 
 #include<stdio.h>
+#include "bfs.h"
 
 typedef struct graph
 {
@@ -13,6 +14,8 @@ typedef struct graph
 graph_t initialise_graph(int rows, int columns);
 
 void generate_graph(graph_t g, double w1, double w2);
+
+void split_graph(graph_t g, int segments);
 
 int read_graph(graph_t g, FILE * in);
 
