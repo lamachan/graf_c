@@ -2,6 +2,8 @@ objects = main.o graph.o bfs.o dijkstry.o
 
 default: $(objects)
 	cc $(objects)
+debug: $(objects)
+	cc $(objects) -DDEBUG
 main.o: main.c graph.h bfs.h dijkstry.h
 	cc -c main.c
 graph.o: graph.c graph.h
