@@ -1,13 +1,18 @@
 #include "graph.h"
+#include "dijkstry.h"
 #include <stdio.h>
 
 int main()
 {
-	graph_t g = initialise_graph(3, 4);
+	//random graph generation test
+	graph_t g = initialise_graph(100, 100);
 
 	generate_graph(g, 1, 10);
 
-	print_graph(g);
+	//print_graph(g);
+
+	//dijsktry test
+	find_path(g, 0, 567);
 
 	return 0;
 }
