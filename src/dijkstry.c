@@ -164,7 +164,7 @@ path_t dijkstry(graph_t g, int start_vertex)
 		{
 			if(g->matrix[current_vertex][i] != 0.0)
 			{
-new_distance = p->distance[current_vertex] + g->matrix[current_vertex][i];
+				new_distance = p->distance[current_vertex] + g->matrix[current_vertex][i];
 				if(p->distance[i] > new_distance)
 				{
 					p->distance[i] = new_distance;

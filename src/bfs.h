@@ -16,7 +16,7 @@ typedef struct fifo
 	fifo_element_t *back;
 } * fifo_t;
 
-typedef enum colour {white, gray, black} colour_t;
+typedef enum colour {white, gray, black} * colour_t;
 
 fifo_t initialise_fifo();
 

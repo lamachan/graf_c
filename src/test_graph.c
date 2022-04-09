@@ -5,7 +5,7 @@
 int main()
 {
 	//random graph generation test
-	graph_t g = initialise_graph(100, 100);
+	graph_t g = initialise_graph(300, 100);
 
 	generate_graph(g, 1, 10);
 
