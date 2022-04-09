@@ -35,6 +35,6 @@ void free_pq(pq_t q);
 
 path_t dijkstry(graph_t g, int start_vertex);
 
-int find_path(graph_t g, int start_vertex, int finish_vertex);
+void find_path(graph_t g, int start_vertex, int finish_vertex);
 
 #endif

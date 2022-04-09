@@ -107,5 +107,12 @@ void write_graph(graph_t g, FILE * out)
 
 void free_graph(graph_t g)
 {
-	
+	int i;
+
+	for(i = 0; i < (g->rows * g->columns); i++)
+	{
+		free(g->matrix[i]);
+	}
+	free(g->matrix);
+	free(g);
 }
