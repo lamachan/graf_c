@@ -2,7 +2,7 @@
 #define _GRAPH_H_
 
 #include<stdio.h>
-#include "bfs.h"
+//#include "bfs.h"
 
 typedef struct graph
 {
@@ -20,6 +20,8 @@ void split_graph(graph_t g, int segments);
 int read_graph(graph_t g, FILE * in);
 
 void write_graph(graph_t g, FILE * out);
+
+void print_graph(graph_t g);
 
 void free_graph(graph_t g);
 

@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -83,10 +84,10 @@ void generate_graph(graph_t g, double w1, double w2)
 			}
 		}
 
+		current_rows = (i - current_columns) % (g->rows);
+
 		current_columns++;
 		current_columns = current_columns % (g->columns);
-
-		current_rows = (i - g->columns) % (g->rows);
 	}
 }
 
@@ -103,6 +104,22 @@ int read_graph(graph_t g, FILE * in)
 void write_graph(graph_t g, FILE * out)
 {
 
+}
+
+void print_graph(graph_t g)
+{
+	int i, j;
+
+	printf("Adjacency matrix:\n");
+	for(i = 0; i < (g->rows * g->columns); i++)
+	{
+		printf("[%d]:\t", i);
+		for(j = 0; j < (g->rows * g->columns); j++)
+		{
+			printf("(%d:%g) ", j, g->matrix[i][j]);
+		}
+		printf("\n");
+	}
 }
 
 void free_graph(graph_t g)
