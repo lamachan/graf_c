@@ -105,9 +105,15 @@ int pop_pq(pq_t q)
 	q->heap[0] = q->heap[--q->count];
 	q->position[popped] = -1;
 	q->position[q->heap[0]] = 0;
-
+#ifdef DEBUG
+	printf("Heap before fixing: ");
+	print_pq(q);
+#endif
 	heap_down(q);
-
+#ifdef DEBUG
+	printf("Heap after fixing: ");
+        print_pq(q);
+#endif
 	return popped;
 }
 
@@ -174,6 +180,8 @@ path_t dijkstry(graph_t g, int start_vertex)
 			}
 		}
 	}
+
+	free_pq(q);
 	
 	return p;
 }
@@ -184,6 +192,11 @@ void find_path(graph_t g, int start_vertex, int finish_vertex)
 	if(p->predecessor[finish_vertex] == INFINITY)
 	{
 		printf("The verices %d and %d are disconnected. There is no path between them.\n", start_vertex, finish_vertex);
+		
+		free(p->predecessor);
+		free(p->distance);
+		free(p);
+		return;
 	}
 	
 	int i;
@@ -204,5 +217,10 @@ void find_path(graph_t g, int start_vertex, int finish_vertex)
 		printf("%d-", good_path[i]);
 	}
 	printf("%d.\nThe total distance: %g.\n", good_path[i], p->distance[finish_vertex]);
+
+	free(p->predecessor);
+	free(p->distance);
+	free(p);
+	free(good_path);
 }
 

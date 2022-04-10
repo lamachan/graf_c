@@ -32,6 +32,6 @@ void free_fifo(fifo_t q);
 
 colour_t bfs(graph_t g, int start_vertex);
 
-int check_connectivity(graph_t g);
+void check_connectivity(graph_t g);
 
 #endif
