@@ -84,7 +84,7 @@ void generate_graph(graph_t g, double w1, double w2)
 			}
 		}
 
-		current_rows = i / (g->columns);
+		current_rows = (i+1) / (g->columns);
 
 		current_columns++;
 		current_columns = current_columns % (g->columns);

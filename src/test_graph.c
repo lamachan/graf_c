@@ -6,7 +6,7 @@
 int main()
 {
 	//random graph generation test
-	graph_t g = initialise_graph(3, 4);
+	graph_t g = initialise_graph(5, 5);
 
 	generate_graph(g, 1, 10);
 #ifdef DEBUG
