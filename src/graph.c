@@ -3,36 +3,90 @@
 #include <stdlib.h>
 #include <time.h>
 
-/*typedef struct graph
-{
-        double **matrix;
-        int rows;
-        int columns;
-} * graph_t;*/
-
 graph_t initialise_graph(int rows, int columns)
 {
-        int i, j;
+	int i, j;
 
-        graph_t g = malloc(sizeof *g);
-        g->matrix = malloc(rows * columns * sizeof *(g->matrix));
-        for(i = 0; i < rows * columns; i++)
-        {
-                g->matrix[i] = malloc(rows * columns * sizeof *(g->matrix[i]));
-                for(j = 0; j < rows * columns; j++)
-                {
-                        g->matrix[i][j] = 0.0;
-                }
-        }
-
+	graph_t g = malloc(sizeof *g);
 	g->rows = rows;
 	g->columns = columns;
+	g->v = malloc(rows * columns * sizeof *(g->v));
 
+	for(i = 0; i < rows * columns; i++)
+	{
+		for(j = 0; j < 4; j++)
+		{
+			g->v[i].neighbour[j] = -1;
+			g->v[i].weight[j] = -1;
+		}
+	}
 	return g;
 }
 
 void generate_graph(graph_t g, double w1, double w2)
 {
+	int i, j;
+	int current_rows = 0, current_columns = 0;
+	double w = 0.0;
+
+	srand(time(NULL));
+
+	for(i = 0; i < (g->rows * g->columns); i++)
+	{
+		if(current_rows != 0)	//i-columns
+                {
+                        if(g->v[i].neighbour[0] == -1)
+			{
+				w = w1 + (w2 - w1) * (double)rand() / RAND_MAX;
+				g->v[i].neighbour[0] = (i - g->columns);
+				g->v[i].weight[0] = w;
+				g->v[i-g->columns].neighbour[3] = i;
+				g->v[i-g->columns].weight[3] = w;
+			}
+                }
+		if(current_columns != 0)
+                {
+                        if(g->v[i].neighbour[1] == -1)
+                        {
+                                w = w1 + (w2 - w1) * (double)rand() / RAND_MAX;
+				g->v[i].neighbour[1] = (i - 1);
+				g->v[i].weight[1] = w;
+				g->v[i-1].neighbour[2] = i;
+				g->v[i-1].weight[2] = w;
+                        }
+                }
+		if(current_columns != (g->columns - 1))
+                {
+                        if(g->v[i].neighbour[2] == -1)
+                        {
+                                w = w1 + (w2 - w1) * (double)rand() / RAND_MAX;
+                                g->v[i].neighbour[2] = (i + 1);
+				g->v[i].weight[2] = w;
+				g->v[i+1].neighbour[1] = i;
+				g->v[i+1].weight[1] = w;
+                        }
+                }
+                if(current_rows != (g->rows - 1))
+                {
+                        if(g->v[i].neighbour[3] == -1)
+                        {
+                                w = w1 + (w2 - w1) * (double)rand() / RAND_MAX;
+                                g->v[i].neighbour[3] = (i + g->columns);
+				g->v[i].weight[3] = w;
+				g->v[i+g->columns].neighbour[0] = i;
+				g->v[i+g->columns].weight[0] = w;
+                        }
+                }
+
+                current_rows = (i+1) / (g->columns);
+
+                current_columns++;
+                current_columns = current_columns % (g->columns);
+	}
+
+
+
+/*
 	int i, j;
 	int size = g->rows * g->columns;
 	int current_rows = 0, current_columns = 0;
@@ -88,7 +142,7 @@ void generate_graph(graph_t g, double w1, double w2)
 
 		current_columns++;
 		current_columns = current_columns % (g->columns);
-	}
+	}*/
 }
 
 void split_graph(graph_t g, int segments)
@@ -110,13 +164,16 @@ void print_graph(graph_t g)
 {
 	int i, j;
 
-	printf("Adjacency matrix:\n");
+	printf("Graph:\n");
 	for(i = 0; i < (g->rows * g->columns); i++)
 	{
 		printf("[%d]:\t", i);
-		for(j = 0; j < (g->rows * g->columns); j++)
+		for(j = 0; j < 4; j++)
 		{
-			printf("(%d:%g) ", j, g->matrix[i][j]);
+			if(g->v[i].neighbour[j] != -1)
+			{
+				printf("(%d:%g) ", g->v[i].neighbour[j], g->v[i].weight[j]);
+			}
 		}
 		printf("\n");
 	}
@@ -124,12 +181,6 @@ void print_graph(graph_t g)
 
 void free_graph(graph_t g)
 {
-	int i;
-
-	for(i = 0; i < (g->rows * g->columns); i++)
-	{
-		free(g->matrix[i]);
-	}
-	free(g->matrix);
+	free(g->v);
 	free(g);
 }

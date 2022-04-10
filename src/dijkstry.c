@@ -144,7 +144,7 @@ void free_pq(pq_t q)
 
 path_t dijkstry(graph_t g, int start_vertex)
 {
-	int i, current_vertex;
+	int i, current_vertex, neighbour;
 	double new_distance;
 	int no_vertices = g->rows * g->columns;
 
@@ -166,16 +166,17 @@ path_t dijkstry(graph_t g, int start_vertex)
 	while(is_empty_pq(q) != 1)
 	{
 		current_vertex = pop_pq(q);
-		for(i = 0; i < no_vertices; i++)
+		for(i = 0; i < 4; i++)
 		{
-			if(g->matrix[current_vertex][i] != 0.0)
+			neighbour = g->v[current_vertex].neighbour[i];
+			if(neighbour != -1)
 			{
-				new_distance = p->distance[current_vertex] + g->matrix[current_vertex][i];
-				if(p->distance[i] > new_distance)
+				new_distance = p->distance[current_vertex] + g->v[current_vertex].weight[i];
+				if(p->distance[neighbour] > new_distance)
 				{
-					p->distance[i] = new_distance;
-					p->predecessor[i] = current_vertex;
-					push_pq(q, i, p->distance[i]);
+					p->distance[neighbour] = new_distance;
+					p->predecessor[neighbour] = current_vertex;
+					push_pq(q, neighbour, p->distance[neighbour]);
 				}
 			}
 		}

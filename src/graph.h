@@ -4,11 +4,17 @@
 #include<stdio.h>
 //#include "bfs.h"
 
+typedef struct vertex
+{
+	int neighbour[4];	//{(n-columns), (n-1), (n+1), (n+columns)}, (-1) if there is no edge
+	double weight[4];	//weight index corresponding with neighbour index, (-1) if there is no edge
+} vertex_t;
+
 typedef struct graph
 {
-	double **matrix;
 	int rows;
 	int columns;
+	vertex_t *v;
 } * graph_t;
 
 graph_t initialise_graph(int rows, int columns);

@@ -80,13 +80,12 @@ void print_fifo(fifo_t q)
 
 void free_fifo(fifo_t q)
 {
-	//możliwy wyciek pamięci z q->back?
 	free(q);
 }
 
 colour_t bfs(graph_t g, int start_vertex)
 {
-	int i, current_vertex, no_vertices = g->rows * g->columns;
+	int i, current_vertex, neighbour, no_vertices = g->rows * g->columns;
 	colour_t colour = malloc(no_vertices * sizeof *colour);
 
 	for(i = 0; i < no_vertices; i++)
@@ -104,12 +103,13 @@ colour_t bfs(graph_t g, int start_vertex)
 		print_fifo(q);
 #endif
 		current_vertex = pop_fifo(q);
-		for(i = 0; i < no_vertices; i++)
+		for(i = 0; i < 4; i++)
 		{
-			if(g->matrix[current_vertex][i] != 0 && colour[i] == white)
+			neighbour = g->v[current_vertex].neighbour[i];
+			if(neighbour != -1 && colour[neighbour] == white)
 			{
-				colour[i] = gray;
-				push_fifo(q, i);
+				colour[neighbour] = gray;
+				push_fifo(q, neighbour);
 			}
 		}
 		colour[current_vertex] = black;
