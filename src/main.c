@@ -2,12 +2,6 @@
 #include "bfs.h"
 #include "dijkstry.h"
 
-int main(int argc, char **argv)
-{
-#include "graph.h"
-#include "bfs.h"
-#include "dijkstry.h"
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +9,7 @@ int main(int argc, char **argv)
 
     void help();
 
-
+	
     int main(int argc, char** argv)
     {
         int row = 100;
