@@ -2,21 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/*typedef struct fifo_element
-{
-        int vertex;
-        struct fifo_element *next;
-} fifo_element_t;
-
-typedef struct fifo
-{
-        int count;
-        fifo_element_t *front;
-        fifo_element_t *back;
-} * fifo_t;
-
-typedef enum colour {white, gray, black} * colour_t;*/
-
 fifo_t initialise_fifo()
 {
 	fifo_t q = malloc(sizeof *q);
@@ -49,7 +34,7 @@ int pop_fifo(fifo_t q)
 {
 	int popped;
 	fifo_element_t *next_node = NULL;
-	//możliwy wyciek pamięci z usuwanego z kolejki elementu? (chyba naprawione)
+	
 	next_node = q->front->next;
 	popped = q->front->vertex;
 	free(q->front);

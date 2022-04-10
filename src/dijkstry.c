@@ -3,20 +3,6 @@
 #include <stdlib.h>
 #include <math.h>
 
-/*typedef struct pq
-{
-        int *heap;
-        int count;
-        double *distance;
-        int *position;
-} * pq_t;
-
-typedef struct path
-{
-        int *predecessor;
-        double *distance;
-} * path_t;*/
-
 pq_t initialise_pq(int size)
 {
 	int i;

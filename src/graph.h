@@ -6,7 +6,7 @@
 
 typedef struct vertex
 {
-	int neighbour[4];	//{(n-columns), (n-1), (n+1), (n+columns)}, (-1) if there is no edge
+	int neighbour[4];	//for v[n]: {(n-columns), (n-1), (n+1), (n+columns)}, (-1) if there is no edge
 	double weight[4];	//weight index corresponding with neighbour index, (-1) if there is no edge
 } vertex_t;
 
