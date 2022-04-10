@@ -130,9 +130,12 @@ void check_connectivity(graph_t g)
 		if(colour[i] != black)
 		{
 			printf("The graph is disconnected.\n");
+			free(colour);
 			return;
 		}
 	}
 	printf("The graph is connected.\n");
+
+	free(colour);
 }
 
