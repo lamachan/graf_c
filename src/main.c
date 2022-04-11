@@ -17,11 +17,13 @@ int main(int argc, char** argv)
     int n = 1;
     double w1 = 0.1;
     double w2 = 10.01;
-    int i;
+    int i, j;
     int v1, v2;
     char* filein = NULL;
     char* fileout = NULL;
-    int flag1 = 0;
+    char fd[] = "graph.output";
+    int flag1 = 0, flag2 = 0;
+    graph_t g;
 
     if (argc > 1)
     {
@@ -104,21 +106,21 @@ int main(int argc, char** argv)
                 fileout = argv[i];
             }
             else if (strcmp(argv[i], "--connecivity") == 0) {
-                //
+                flag2 = 1;
             }
             else if (strcmp(argv[i], "--path") == 0) {
                 i++;
-                if (i >= argc || atoi(argv[i]) == 0) {
+                if (i >= argc || atoi(argv[i]) <= 0) {
                     fprintf(stderr, "Error! The flag 'segments' does not accept the given format of arguments.For further info please refer to the manual");
                     exit(1);
                 }
-                v1 = atof(argv[i]);
+                v1 = atoi(argv[i]);
                 i++;
-                if (i >= argc || atoi(argv[i]) == 0) {
+                if (i >= argc || atoi(argv[i]) <= 0) {
                     fprintf(stderr, "Error! The flag 'segments' does not accept the given format of arguments.For further info please refer to the manual");
                     exit(1);
                 }
-                v2 = atof(argv[i]);
+                v2 = atoi(argv[i]);
             }
             else if (strcmp(argv[i], "--help") == 0) {
                 help();
@@ -131,19 +133,47 @@ int main(int argc, char** argv)
     }
 
     if (fileout == NULL) {
-        // *fileout = "graph.output";
+        fileout = fd;
     }
 
     if (filein == NULL)
     {
-        graph_t initialise_graph(int row, int column);
-        void generate_graph(graph_t g, double w1, double w2);
+        g = initialise_graph(row, column);
+        generate_graph(g, w1, w2);
+
     }
     else
     {
-        graph_t initialise_graph(int row, int column);
-        int read_graph(graph_t g, char* filein);
+        FILE* ptr = fopen(filein, "w");
+        if (NULL == ptr) {
+            fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+            exit(1);
+        }
+        int function1 = fscanf(ptr, "%d %d\n", &row, &column);
+        if (function1 != 2) {
+            fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+            exit(1);
+        }
+
+        g = initialise_graph(row, column);
+        j = read_graph(g, ptr);
+        if (j == 1) {
+            fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+            exit(1);
+        }
+        fclose(ptr);
     }
+
+    if (flag2 == 1) {
+        check_connectivity(g);
+    }
+
+
+    write_graph(g, fileout);
+    printf("\n");
+    print_graph(g);
+
+    free_graph(g);
 }
 
 void help() {
