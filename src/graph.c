@@ -90,9 +90,73 @@ void split_graph(graph_t g, int segments)
 
 }
 
-int read_graph(graph_t g, FILE * in)
+int read_graph(graph_t g, char *filein)
 {
+	int row, column;
+	int x1, x2, x3, x4, x5, x6, x7, x8, x9;
+	int w1, w2, w3, w4, w5, w6, w7, w8, w9;
+	int i1 = 0, j1 = 0;
 
+	FILE* ptr = fopen(filein, "r");
+	if (NULL == ptr) {
+		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+		exit(1);
+	}
+
+	int function1 = fscanf(ptr, "%d %d\n", &row, &column);
+	if (function1 != 2) {
+		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+		exit(1);
+	}
+	g->rows = row;
+	g->columns = column;
+
+	for (i1 = 0; i1 < row; i1++)
+	{
+		for (j1 = 0; j1 < column; j1++)
+		{
+			if ((i1 == 0 && j1 == 0) || (i1 == 0 && j1 == column) || (i1 == row && j1 == 0) || (i1 == row && j1 == column)) {
+				int function2 = fscanf(ptr, "\t%d :%f %d :%f\n", &x1, &w1, &x2, &w2);
+				if (function2 != 4) {
+					fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+					exit(1);
+				}
+				g->v[i1 * column + j1].neighbour[0] = x1;
+				g->v[i1 * column + j1].weight[0] = w1;
+				g->v[i1 * column + j1].neighbour[1] = x2;
+				g->v[i1 * column + j1].weight[1] = w2;
+
+			}
+			if ((i1 == 0 && (j1 > 0 && j1 < column)) || (i1 == row && (j1 > 0 && j1 < column)) || (i1 > 0 && i1 < column) && j1 == 0 || (i1 > 0 && i1 < column) && j1 == column) {
+				int function3 = fscanf(ptr, "\t%d :%f %d :%f %d :%f\n", &x3, &w3, &x4, &w4, &x5, &w5);
+				if (function3 != 6) {
+					fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+					exit(1);
+				}
+				g->v[i1 * column + j1].neighbour[0] = x3;
+				g->v[i1 * column + j1].weight[0] = w3;
+				g->v[i1 * column + j1].neighbour[1] = x4;
+				g->v[i1 * column + j1].weight[1] = w4;
+				g->v[i1 * column + j1].neighbour[2] = x5;
+				g->v[i1 * column + j1].weight[2] = w5;
+			}
+			else {
+				int function4 = fscanf(ptr, "\t%d :%f %d :%f %d :%f %d :%f\n", &x6, &w6, &x7, &w7, &x8, &w8, &x9, &w9);
+				if (function4 != 8) {
+					fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+					exit(1);
+				}
+				g->v[i1 * column + j1].neighbour[0] = x6;
+				g->v[i1 * column + j1].weight[0] = w6;
+				g->v[i1 * column + j1].neighbour[1] = x7;
+				g->v[i1 * column + j1].weight[1] = w7;
+				g->v[i1 * column + j1].neighbour[2] = x8;
+				g->v[i1 * column + j1].weight[2] = w8;
+				g->v[i1 * column + j1].neighbour[3] = x9;
+				g->v[i1 * column + j1].weight[3] = w9;
+			}
+		}
+	}
 }
 
 void write_graph(graph_t g, FILE * out)
