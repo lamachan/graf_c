@@ -164,13 +164,13 @@ int read_graph(graph_t g, FILE * in)
 
 void write_graph(graph_t g, char* out)
 {
-	FILE* ptr = fopen(out, "r");
+	FILE* ptr = fopen(out, "w");
 	if (NULL == ptr) {
 		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
 		exit(1);
 	}
 
-	fprintf(ptr, "%d %d", g->rows, g->columns);
+	fprintf(ptr, "%d %d\n", g->rows, g->columns);
 	for (int i = 0; i < (g->rows * g->columns); i++)
 	{
 		fprintf(ptr, "\t");
