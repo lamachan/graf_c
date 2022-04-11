@@ -23,9 +23,11 @@ void generate_graph(graph_t g, double w1, double w2);
 
 void split_graph(graph_t g, int segments);
 
-int read_graph(graph_t g, char *filein);
+static int add_neighbour(graph_t g, int vertex, int neighbour, double weight);
 
-void write_graph(graph_t g, char *fileoutout);
+int read_graph(graph_t g, FILE * in);
+
+void write_graph(graph_t g, FILE * out);
 
 void print_graph(graph_t g);
 

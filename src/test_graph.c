@@ -3,19 +3,27 @@
 #include "bfs.h"
 #include <stdio.h>
 
-int main()
+int main(int argc, char **argv)
 {
 	//random graph generation test
-	graph_t g = initialise_graph(1000, 1000);
+	graph_t g = initialise_graph(3, 4);
 
-	generate_graph(g, 1, 10);
+	FILE * in = fopen(argv[1], "r");
+	if(in == NULL)
+	{
+		printf("Blad otwierania!\n");
+	}
+	int x = read_graph(g, in);
+	printf("%d\n", x);
+
+	//generate_graph(g, 1, 10);
 #ifdef DEBUG
 	print_graph(g);
 #endif
 	//dijsktry test
-	find_path(g, 0, 567822);
+	//find_path(g, 0, 567822);
 
-	check_connectivity(g);
+	//check_connectivity(g);
 
 	free_graph(g);
 

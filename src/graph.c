@@ -90,7 +90,82 @@ void split_graph(graph_t g, int segments)
 
 }
 
-int read_graph(graph_t g, char *filein)
+static int add_neighbour(graph_t g, int vertex, int neighbour, double weight)
+{
+	if(neighbour < 0 || neighbour >= (g->rows * g->columns) || neighbour == vertex || weight <= 0.0)
+	{
+		return -1;
+	}
+
+	if(neighbour == (vertex - g->columns))
+	{
+		g->v[vertex].neighbour[0] = neighbour;
+		g->v[vertex].weight[0] = weight;
+		return 0;
+	}
+	if(neighbour == (vertex - 1))
+	{
+		g->v[vertex].neighbour[1] = neighbour;
+		g->v[vertex].weight[1] = weight;
+		return 1;
+	}
+	if(neighbour == (vertex + 1))
+	{
+		g->v[vertex].neighbour[2] = neighbour;
+		g->v[vertex].weight[2] = weight;
+		return 2;
+	}
+	if(neighbour == (vertex + g->columns))
+	{
+		g->v[vertex].neighbour[3] = neighbour;
+		g->v[vertex].weight[3] = weight;
+		return 3;
+	}
+
+	return -1;
+}
+
+int read_graph(graph_t g, FILE * in)
+{
+        //sprawdzenie, czy plik można otworzyć w main.c przed wywołaniem funkcji read_graph
+
+        int rows, columns, neighbour;
+        double weight;
+	int i;
+	int c = 0;
+
+        if(fscanf(in, "%d %d\n", &rows, &columns) != 2)
+        {
+                return 1;       //interpretacja i komunikat w main.c
+        }
+        g->rows = rows;
+        g->columns = columns;
+
+        for(i = 0; i < (g->rows * g->columns); i++)
+        {
+		while(c != '\n' && c != EOF)
+		{
+			if(fscanf(in, "%d :%lf", &neighbour, &weight) != 2)
+			{
+				return 1;
+			}
+			if(add_neighbour(g, i, neighbour, weight) == -1)
+			{
+				return 1;
+			}
+			if((c = fgetc(in)) == EOF && i != (g->rows * g->columns - 1))
+			{
+				return 1;
+			}
+		}
+		c = 0;
+        }
+
+	return 0;
+}
+
+
+/*int read_graph(graph_t g, char *filein)
 {
 	int row, column;
 	int x1, x2, x3, x4, x5, x6, x7, x8, x9;
@@ -157,7 +232,7 @@ int read_graph(graph_t g, char *filein)
 			}
 		}
 	}
-}
+}*/
 
 void write_graph(graph_t g, FILE * out)
 {
