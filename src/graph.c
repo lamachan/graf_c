@@ -162,10 +162,33 @@ int read_graph(graph_t g, FILE * in)
 	return 0;
 }
 
-void write_graph(graph_t g, FILE * out)
+void write_graph(graph_t g, char* out)
 {
+	FILE* ptr = fopen(out, "r");
+	if (NULL == ptr) {
+		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
+		exit(1);
+	}
+
+	fprintf(ptr, "%d %d", g->rows, g->columns);
+	for (int i = 0; i < (g->rows * g->columns); i++)
+	{
+		fprintf(ptr, "\t");
+		for (int j = 0; j < 4; j++)
+		{
+			if (g->v[i].neighbour[j] != -1)
+			{
+				fprintf(ptr, "%d :%g ", g->v[i].neighbour[j], g->v[i].weight[j]);
+			}
+		}
+		fprintf(ptr, "\n");
+	}
+
+	fclose(ptr);
 
 }
+
+
 
 void print_graph(graph_t g)
 {
