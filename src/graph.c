@@ -128,18 +128,16 @@ static int add_neighbour(graph_t g, int vertex, int neighbour, double weight)
 int read_graph(graph_t g, FILE * in)
 {
         //sprawdzenie, czy plik można otworzyć w main.c przed wywołaniem funkcji read_graph
-
-        int rows, columns, neighbour;
+	//wczytanie rows i columns w main.c
+        int neighbour;
         double weight;
 	int i;
 	int c = 0;
 
-        if(fscanf(in, "%d %d\n", &rows, &columns) != 2)
+        /*if(fscanf(in, "%d %d\n", &rows, &columns) != 2)
         {
-                return 1;       //interpretacja i komunikat w main.c
-        }
-        g->rows = rows;
-        g->columns = columns;
+                return 1;	//przeniesione do main.c, aby zainicjalizowac graph
+        }*/
 
         for(i = 0; i < (g->rows * g->columns); i++)
         {
@@ -147,7 +145,7 @@ int read_graph(graph_t g, FILE * in)
 		{
 			if(fscanf(in, "%d :%lf", &neighbour, &weight) != 2)
 			{
-				return 1;
+				return 1;	//interpretacja i komunikat w main.c
 			}
 			if(add_neighbour(g, i, neighbour, weight) == -1)
 			{
