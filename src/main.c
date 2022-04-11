@@ -137,13 +137,13 @@ int main(int argc, char** argv)
 
     if (filein == NULL)
     {
-        graph_t initialise_graph(int row, int column);
-        void generate_graph(graph_t g, double w1, double w2);
+       // graph_t initialise_graph(int row, int column);
+       //void generate_graph(graph_t g, double w1, double w2);
     }
     else
     {
-        graph_t initialise_graph(int row, int column);
-        int read_graph(graph_t g, char* filein);
+        //graph_t initialise_graph(int row, int column);
+        //int read_graph(graph_t g, char* filein);
     }
 }
 
