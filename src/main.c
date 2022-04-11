@@ -7,7 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 void help();
 
 
@@ -47,7 +46,7 @@ int main(int argc, char** argv)
                 }
                 flag1 = 1;
             }
-            if (strcmp(argv[i], "--weigth") == 0) {
+            else if (strcmp(argv[i], "--weigth") == 0) {
                 i++;
                 if (i >= argc || atof(argv[i]) == 0) {
                     fprintf(stderr, "Error! The flag 'weight' does not accept the given format of arguments.For further info please refer to the manual");
@@ -71,7 +70,7 @@ int main(int argc, char** argv)
                 flag1 = 1;
 
             }
-            if (strcmp(argv[i], "--segments") == 0) {
+            else if (strcmp(argv[i], "--segments") == 0) {
                 i++;
                 if (i >= argc || atoi(argv[i]) == 0) {
                     fprintf(stderr, "Error! The flag 'segments' does not accept the given format of arguments.For further info please refer to the manual");
@@ -84,7 +83,7 @@ int main(int argc, char** argv)
                 }
                 flag1 = 1;
             }
-            if (strcmp(argv[i], "--in") == 0) {
+            else if (strcmp(argv[i], "--in") == 0) {
                 i++;
                 if (i >= argc) {
                     fprintf(stderr, "Error! The flag 'segments' does not accept the given format of arguments.For further info please refer to the manual");
@@ -96,7 +95,7 @@ int main(int argc, char** argv)
                     exit(1);
                 }
             }
-            if (strcmp(argv[i], "--out") == 0) {
+            else if (strcmp(argv[i], "--out") == 0) {
                 i++;
                 if (i >= argc) {
                     fprintf(stderr, "Error! The flag 'out' does not accept the given format of arguments.For further info please refer to the manual");
@@ -104,10 +103,10 @@ int main(int argc, char** argv)
                 }
                 fileout = argv[i];
             }
-            if (strcmp(argv[i], "--connecivity") == 0) {
+            else if (strcmp(argv[i], "--connecivity") == 0) {
                 //
             }
-            if (strcmp(argv[i], "--path") == 0) {
+            else if (strcmp(argv[i], "--path") == 0) {
                 i++;
                 if (i >= argc || atoi(argv[i]) == 0) {
                     fprintf(stderr, "Error! The flag 'segments' does not accept the given format of arguments.For further info please refer to the manual");
@@ -121,7 +120,7 @@ int main(int argc, char** argv)
                 }
                 v2 = atof(argv[i]);
             }
-            if (strcmp(argv[i], "--help") == 0) {
+            else if (strcmp(argv[i], "--help") == 0) {
                 help();
             }
             else {
@@ -137,13 +136,13 @@ int main(int argc, char** argv)
 
     if (filein == NULL)
     {
-       // graph_t initialise_graph(int row, int column);
-       //void generate_graph(graph_t g, double w1, double w2);
+        graph_t initialise_graph(int row, int column);
+        void generate_graph(graph_t g, double w1, double w2);
     }
     else
     {
-        //graph_t initialise_graph(int row, int column);
-        //int read_graph(graph_t g, char* filein);
+        graph_t initialise_graph(int row, int column);
+        int read_graph(graph_t g, char* filein);
     }
 }
 
@@ -158,5 +157,4 @@ void help() {
     printf("--path v1 v2 - znalezienie sciezki z wierzcholka v1 do v2\n");
     printf("--help\n");
 }
-
 
