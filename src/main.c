@@ -127,4 +127,3 @@
         printf("--path v1 v2 - znalezienie sciezki z wierzcholka v1 do v2\n");
         printf("--help\n");
     }
-}
