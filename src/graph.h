@@ -27,7 +27,7 @@ static int add_neighbour(graph_t g, int vertex, int neighbour, double weight);
 
 int read_graph(graph_t g, FILE * in);
 
-void write_graph(graph_t g, char * out);
+void write_graph(graph_t g, FILE * out);
 
 void print_graph(graph_t g);
 
