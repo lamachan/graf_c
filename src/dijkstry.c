@@ -176,7 +176,7 @@ path_t dijkstry(graph_t g, int start_vertex)
 void find_path(graph_t g, int start_vertex, int finish_vertex)
 {
 	path_t p = dijkstry(g, start_vertex);
-	if(p->predecessor[finish_vertex] == INFINITY)
+	if(p->predecessor[finish_vertex] == -1)
 	{
 		printf("The verices %d and %d are disconnected. There is no path between them.\n", start_vertex, finish_vertex);
 		
