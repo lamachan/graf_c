@@ -6,24 +6,73 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+#include <math.h>
+#include <float.h>
 
-void help();
+void help() {
+    printf("HELP\nGraf - program generujacy i analizujacy grafy\n");
+    printf("--size rows columns - rozmiar generowanego grafu\n\tmax rozmiar row x column < 10 ^ 6\n\tdomyslnie: row = 100 column = 100\n");
+    printf("--weight w1 w2 - zakres losowanych wag dla krawedzi\n\tw1, w2 > 0.0; w1,w2 <= 100.0\n\tdomyslnie: w1 ~ 0.0 w2 = 10.0\n");
+    printf("--segments n - liczba segmentow, na ktore podzielony jest graf\n\tn <= 10\n\tdomyslnie: n = 1\n");
+    printf("--in filename - plik wejsciowy\n");
+    printf("--out filename - plik wyjsciowy, do ktorego zostanie zapisany graf\n\tdomyslnie: filename = graph.output\n");
+    printf("--connectivity - sprawdzenie spojnosci grafu\n");
+    printf("--path v1 v2 - znalezienie najkrotszej sciezki od wierzcholka v1 do v2\n");
+    printf("--help - wysietlenie tej instrukcji\n");
+}
 
+int is_int(char *argument)
+{
+	int i;
+	
+	for(i = 0; i < strlen(argument); i++)
+	{
+		if(!isdigit(argument[i]))
+		{
+			return 0;
+		}
+	}
+	
+	return 1;
+}
+
+int is_double(char *argument)
+{
+	int i, dot_count = 0;
+
+	for(i = 0; i < strlen(argument); i++)
+	{
+		if(!isdigit(argument[i]))
+		{
+			if(argument[i] = '.' && dot_count == 0)
+			{
+				dot_count++;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+	}
+
+	return 1;
+}
 
 int main(int argc, char** argv)
 {
-    int row = 100;
-    int column = 100;
+    int rows = 100;
+    int columns = 100;
     int n = 1;
-    double w1 = 0.1;
-    double w2 = 10.01;
+    double w1 = 0.0 + DBL_MIN;
+    double w2 = 10.0;
     int i, j;
-    int v1, v2;
+    int v1 = 0, v2 = 0;
     char* filein = NULL;
     char* fileout = NULL;
     char fd[] = "graph.output";
-    int flag1 = 0, flag2 = 0;
-    graph_t g;
+    int in_conflict = 0, connectivity = 0;
+    graph_t g = NULL;
 
     if (argc > 1)
     {
@@ -31,22 +80,22 @@ int main(int argc, char** argv)
         {
             if (strcmp(argv[i], "--size") == 0) {
                 i++;
-                if (i >= argc || atoi(argv[i]) <= 0) {
+                if (i >= argc || is_int(argv[i]) == 0) {
                     fprintf(stderr, "Error! The flag 'size' does not accept the given format of arguments.For further info please refer to the manual");
                     exit(1);
                 }
-                row = atoi(argv[i]);
+                rows = atoi(argv[i]);
                 i++;
                 if (i >= argc || atoi(argv[i]) == 0) {
                     fprintf(stderr, "Error! The flag 'size' does not accept the given format of arguments.For further info please refer to the manual");
                     exit(1);
                 }
-                column = atoi(argv[i]);
-                if (row * column <= 0 || row * column >= 1000000) {
+                columns = atoi(argv[i]);
+                if (rows * columns <= 0 || rows * columns > 1000000) {
                     fprintf(stderr, "Error! The values of arguments for flag 'size' are outof the allowed range.For further info please refer to the manual.");
                     exit(1);
                 }
-                flag1 = 1;
+                in_conflict = 1;
             }
             else if (strcmp(argv[i], "--weigth") == 0) {
                 i++;
@@ -69,7 +118,7 @@ int main(int argc, char** argv)
                     fprintf(stderr, "Error! The values of arguments for flag 'weight' are outof the allowed range.For further info please refer to the manual");
                     exit(1);
                 }
-                flag1 = 1;
+                in_conflict = 1;
 
             }
             else if (strcmp(argv[i], "--segments") == 0) {
@@ -83,7 +132,7 @@ int main(int argc, char** argv)
                     fprintf(stderr, "Error! The values of arguments for flag 'segments' are outof the allowed range.For further info please refer to the manual");
                     exit(1);
                 }
-                flag1 = 1;
+                in_conflict = 1;
             }
             else if (strcmp(argv[i], "--in") == 0) {
                 i++;
@@ -92,7 +141,7 @@ int main(int argc, char** argv)
                     exit(1);
                 }
                 filein = argv[i];
-                if (flag1 == 1) {
+                if (in_conflict == 1) {
                     fprintf(stderr, "Error! The flags 'size', 'weight' and 'segments' are mutually exclusive with the flag 'in'.For further info please refer to the manual");
                     exit(1);
                 }
@@ -106,7 +155,7 @@ int main(int argc, char** argv)
                 fileout = argv[i];
             }
             else if (strcmp(argv[i], "--connecivity") == 0) {
-                flag2 = 1;
+                connectivity = 1;
             }
             else if (strcmp(argv[i], "--path") == 0) {
                 i++;
@@ -138,53 +187,41 @@ int main(int argc, char** argv)
 
     if (filein == NULL)
     {
-        g = initialise_graph(row, column);
+        g = initialise_graph(rows, columns);
         generate_graph(g, w1, w2);
 
     }
     else
     {
-        FILE* ptr = fopen(filein, "w");
-        if (NULL == ptr) {
+        FILE * in = fopen(filein, "w");
+        if (in == NULL) {
             fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
             exit(1);
         }
-        int function1 = fscanf(ptr, "%d %d\n", &row, &column);
-        if (function1 != 2) {
+        if (fscanf(in, "%d %d\n", &rows, &columns) != 2) {
             fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
             exit(1);
         }
 
-        g = initialise_graph(row, column);
-        j = read_graph(g, ptr);
-        if (j == 1) {
+        g = initialise_graph(rows, columns);
+        if (read_graph(g, in) == 1) {
             fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual");
             exit(1);
         }
-        fclose(ptr);
+        fclose(in);
     }
 
-    if (flag2 == 1) {
+#ifdef DEBUG
+    print_graph(g);
+#endif
+
+    if (connectivity == 1) {
         check_connectivity(g);
     }
 
-
     write_graph(g, fileout);
-    printf("\n");
-    print_graph(g);
 
     free_graph(g);
-}
 
-void help() {
-    printf("HELP\nGraf - program generujacy i analizujacy grafy\n");
-    printf("--size rows columns - rozmiar generowanego grafu\n\tmax rozmiar row x column < 10 ^ 6\n\tdomyslnie: row = 100 column = 100\n");
-    printf("--weight w1 w2 - zakres losowanych wag dla krawedzi\n\tw1, w2 >= 0.1; w1,w2 <=100.0\n\tdomyslnie: w1 = 0.1 w2 = 10.0\n");
-    printf("--segments - liczba segmentow na ktore podzielony jest graf\n\tn <= 10\n\tdomyslnie: n = 1\n");
-    printf("--in - plik wejsciowy\n");
-    printf("--out - plik wyjsciowy do ktorego zostanie zapisany graf\n");
-    printf("--connectivoty - sprawdzenie spojnosci grafu\n");
-    printf("--path v1 v2 - znalezienie sciezki z wierzcholka v1 do v2\n");
-    printf("--help\n");
+    return 0;
 }
-
