@@ -198,6 +198,10 @@ int main(int argc, char** argv)
     if (connectivity == 1) {
         check_connectivity(g);
     }
+
+    if (v1 > (rows * columns - 1) || v2 > (rows * columns - 1)) {
+        path = 0;
+    }
     if (path == 1) {
         find_path(g, v1, v2);
     }
