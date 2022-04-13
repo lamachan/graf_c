@@ -363,6 +363,7 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
 	}
 	write_graph(g, out);
+	fclose(out);
 
 	free_graph(g);
 

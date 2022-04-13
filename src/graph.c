@@ -217,7 +217,8 @@ void split_graph(graph_t g, double w1, double w2)
 		}
 	}
 
-	free(colour);
+	free(p->predecessor);
+	free(p->distance);
 	free(p);
 	free(good_path);
 }
