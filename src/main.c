@@ -28,7 +28,7 @@ int main(int argc, char** argv)
     char* filein = NULL;
     char* fileout = NULL;
     char fd[] = "graph.output";
-    int in_conflict = 0, connectivity = 0, path = 0, in = 0;
+    int in_conflict = 0, connectivity = 0, path = 0, in = 0, read;
     graph_t g = NULL;
 
     if (argc > 1)
@@ -201,17 +201,6 @@ int main(int argc, char** argv)
             else {
                 if (rows_in * columns_in <= 0 || rows_in * columns_in > 1000000) {
                     fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
-                    rows_in = 100;
-                    columns_in = 100;
-                }
-                g = initialise_graph(rows_in, columns_in);
-                if (g == NULL) {
-                    fprintf(stderr, "Critical error!\n");
-                    return 1;
-                }
-                if (read_graph(g, in) == 1) {
-                    fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
-                    free_graph(g);
                     g = initialise_graph(rows, columns);
                     if (g == NULL) {
                         fprintf(stderr, "Critical error!\n");
@@ -219,6 +208,26 @@ int main(int argc, char** argv)
                     }
                     generate_graph(g, w1, w2);
                 }
+                else {
+                    g = initialise_graph(rows_in, columns_in);
+                    if (g == NULL) {
+                        fprintf(stderr, "Critical error!\n");
+                        return 1;
+                    }
+                    read = read_graph(g, in);
+                    if (read == 1) {
+                        fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
+                        free_graph(g);
+                        g = initialise_graph(rows, columns);
+                        if (g == NULL) {
+                            fprintf(stderr, "Critical error!\n");
+                            return 1;
+                        }
+                        generate_graph(g, w1, w2);
+                    }
+
+                }
+
             }
         }
         fclose(in);
