@@ -23,7 +23,7 @@ int main(int argc, char** argv)
     int n = 1;
     double w1 = 0.0 + DBL_MIN;
     double w2 = 10.0;
-    int i, j;
+    int i;
     int v1 = 0, v2 = 0;
     char* filein = NULL;
     char* fileout = NULL;
@@ -61,7 +61,7 @@ int main(int argc, char** argv)
                 }
                 in_conflict = 1;
             }
-            else if (strcmp(argv[i], "--weigth") == 0) {
+            else if (strcmp(argv[i], "--weight") == 0) {
                 i++;
                 if (i >= argc || is_double(argv[i]) == 0) {
                     fprintf(stderr, "Error! The flag 'weight' does not accept the given format of arguments. For further info please refer to the manual.\n");
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
                     fileout = argv[i];
                 }
             }
-            else if (strcmp(argv[i], "--connecivity") == 0) {
+            else if (strcmp(argv[i], "--connectivity") == 0) {
                 connectivity = 1;
             }
             else if (strcmp(argv[i], "--path") == 0) {
@@ -293,7 +293,7 @@ int is_double(char* argument)
     {
         if (!isdigit(argument[i]))
         {
-            if (argument[i] = '.' && dot_count == 0)
+            if (argument[i] == '.' && dot_count == 0)
             {
                 dot_count++;
             }

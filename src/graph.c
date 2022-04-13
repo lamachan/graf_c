@@ -25,7 +25,7 @@ graph_t initialise_graph(int rows, int columns)
 
 void generate_graph(graph_t g, double w1, double w2)
 {
-	int i, j;
+	int i;
 	int current_rows = 0, current_columns = 0;
 	double w = 0.0;
 
