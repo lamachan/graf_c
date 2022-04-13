@@ -87,58 +87,55 @@ void generate_graph(graph_t g, double w1, double w2)
 	}
 }
 
-void split_graph(graph_t g, int segments, double w1, double w2)
+void split_graph(graph_t g, double w1, double w2)
 {
 	int start_vertex, finish_vertex;
-	int count_edges = 0;
+	int count_edges = 0, connected = 0;
 	int i, j;
 	path_t p;
 	colour_t colour;
 
-	do
+	while(connected == 0)
 	{
-		count_edges = 0;
-		start_vertex = (g->rows * g->columns) * rand() / RAND_MAX;
-		for(i = 0; i < 4; i++)
+		do
 		{
-			if(g->v[start_vertex].neighbour[i] != -1)
-                        {
-                                count_edges++;
-                        }
-		}
-		if(count_edges != 3)
-                {
-                        continue;
-                }
+			count_edges = 0;
+			start_vertex = (g->rows * g->columns) * rand() / RAND_MAX;
+			for(i = 0; i < 4; i++)
+			{
+				if(g->v[start_vertex].neighbour[i] != -1)
+                        	{
+                                	count_edges++;
+                        	}
+			}
+			if(count_edges != 3)
+                	{
+                        	continue;
+               	 	}
 
-		count_edges = 0;
-		finish_vertex = (g->rows * g->columns) * rand() / RAND_MAX;
-		for(i = 0; i < 4; i++)
-		{
-                        if(g->v[finish_vertex].neighbour[i] != -1)
-                        {
-                                count_edges++;
-                        }
-                }
-		if(count_edges != 3)
-                {
-                        continue;
-		}
+			count_edges = 0;
+			finish_vertex = (g->rows * g->columns) * rand() / RAND_MAX;
+			for(i = 0; i < 4; i++)
+			{
+                        	if(g->v[finish_vertex].neighbour[i] != -1)
+                        	{
+                                	count_edges++;
+                        	}
+                	}
+			if(count_edges != 3)
+                	{
+                        	continue;
+			}
 
+		} while(count_edges != 3 || (start_vertex / g->columns) == (finish_vertex / g->columns) || (start_vertex % g->columns) == (finish_vertex % g->columns));
 
-	} while(count_edges != 3 || (start_vertex / g->columns) == (finish_vertex / g->columns) || (start_vertex % g->columns) == (finish_vertex % g->columns));
-
-	printf("Start vertex: %d\nFinish vertex: %d\n", start_vertex, finish_vertex);
-
-	colour = bfs(g, start_vertex);
-	if(colour[finish_vertex] == white)
-	{
-		printf("Disconnected!\n");
+        	colour = bfs(g, start_vertex);
+        	if(colour[finish_vertex] != white)
+        	{
+                	connected = 1;
+	        }
 		free(colour);
-
-		return;
 	}
-	
 	
 	p = dijkstry(g, start_vertex);
 	int *good_path = malloc((g->rows * g->columns) * sizeof *good_path);
@@ -150,13 +147,6 @@ void split_graph(graph_t g, int segments, double w1, double w2)
                	current_vertex = p->predecessor[current_vertex];
        	}
        	good_path[no_vertices] = current_vertex;
-
-	printf("Path between %d and %d: ", start_vertex, finish_vertex);
-       	for(i = no_vertices; i > 0; i--)
-       	{
-               	printf("%d-", good_path[i]);
-       	}
-	printf("%d.\n", good_path[i]);
 
 	for(i = no_vertices; i >= 0; i--)
 	{
@@ -230,80 +220,6 @@ void split_graph(graph_t g, int segments, double w1, double w2)
 	free(colour);
 	free(p);
 	free(good_path);
-
-	/*int start_vertex, first_step;
-	int step = 0, count3 = 0, count4 = 0;
-	int i, j;
-	int *path = malloc((g->rows * g->columns) * sizeof *path);
-
-	while(step == 0)
-	{
-		start_vertex = (g->rows * g->columns) * rand() / RAND_MAX;
-		printf("Try for start vertex: %d\n", start_vertex);
-		for(i = 0; i < 4; i++)
-		{
-			if(g->v[start_vertex].neighbour[i] != -1)
-			{
-				count3++;
-			}
-		}
-		if(count3 != 3)
-		{
-			count3 = 0;
-			continue;
-		}
-		printf("Success, start vertex: %d\n", start_vertex);
-		for(i = 0; i < 4; i++)
-		{
-			if(g->v[start_vertex].neighbour[i] == -1)
-			{
-				 continue;
-			}
-			first_step = g->v[start_vertex].neighbour[i];
-			printf("Try for first step: %d\n", first_step);
-			for(j = 0; j < 4; j++)
-			{
-				if(g->v[first_step].neighbour[j] != -1)
-				{
-					count4++;
-				}
-			}
-			if(count4 == 4)
-			{
-				step = 1;
-				printf("Success, first step: %d\n", first_step);
-				break;
-			}
-			count4 = 0;
-		}
-	}
-	printf("Start vertex: %d, first step: %d\n", start_vertex, first_step);
-	path[0] = start_vertex;
-	path[1] = first step;
-	count3 = 0;
-	count4 = 0;
-	int current_vertex = first_step;
-	int path_count = 2;
-
-	while(count3 != 3)
-	{
-		path[path_count] = current_vertex;
-		path_count++;
-		int direction = 2 + rand() % 2;
-		int next_vertex = g->v[current_vertex].neighbour[direction];
-		for(i = 0; i < 4; i++)
-		{
-			if(g->v[next_vertex].neighbour[i] != -1)
-			{
-				count3++;
-			}
-		}
-		if(count3 != 3)
-		{
-			count3 = 0;
-			continue;
-		}
-	}*/
 }
 
 static int add_neighbour(graph_t g, int vertex, int neighbour, double weight)

@@ -20,7 +20,7 @@ graph_t initialise_graph(int rows, int columns);
 
 void generate_graph(graph_t g, double w1, double w2);
 
-void split_graph(graph_t g, int segments, double w1, double w2);
+void split_graph(graph_t g, double w1, double w2);
 
 static int add_neighbour(graph_t g, int vertex, int neighbour, double weight);
 

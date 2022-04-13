@@ -4,6 +4,8 @@ default: $(objects)
 	cc $(objects)
 debug: $(objects)
 	cc $(objects) -DDEBUG
+debug_graph: $(objects)
+	cc $(objects) -DDEBUG_GRAPH
 main.o: main.c graph.h bfs.h dijkstry.h
 	cc -c main.c
 graph.o: graph.c graph.h
