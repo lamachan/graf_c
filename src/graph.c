@@ -364,6 +364,10 @@ int read_graph(graph_t g, FILE * in)
 			{
 				return 1;
 			}
+			if(c == ' ' && (c = fgetc(in)) != '\n')
+			{
+				ungetc(c, in);
+			}
 		}
 		c = 0;
         }
@@ -373,22 +377,21 @@ int read_graph(graph_t g, FILE * in)
 
 void write_graph(graph_t g, FILE* out)
 {
+	int i, j;
 
 	fprintf(out, "%d %d\n", g->rows, g->columns);
-	for (int i = 0; i < (g->rows * g->columns); i++)
+	for(i = 0; i < (g->rows * g->columns); i++)
 	{
 		fprintf(out, "\t");
-		for (int j = 0; j < 4; j++)
+		for(j = 0; j < 4; j++)
 		{
-			if (g->v[i].neighbour[j] != -1)
+			if(g->v[i].neighbour[j] != -1)
 			{
 				fprintf(out, "%d :%g ", g->v[i].neighbour[j], g->v[i].weight[j]);
 			}
 		}
 		fprintf(out, "\n");
 	}
-
-
 }
 
 void print_graph(graph_t g)

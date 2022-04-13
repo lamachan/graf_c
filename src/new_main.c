@@ -16,11 +16,13 @@ int is_double(char* argument);
 int main(int argc, char **argv)
 {
 	int rows = 100, columns = 100;
+	int rows_in = 0, columns_in = 0;
 	double w1 = 0.0 + DBL_MIN, w2 = 10.0;
 	int n = 1;
 	int v1 = -1, v2 = -1;
 	char *filein = NULL;
 	char *fileout = "graph.output";
+	int read_failure = 1;
 	int in_conflict = 0;
 	int connectivity = 0, path = 0;
 	graph_t g = NULL;
@@ -246,7 +248,117 @@ int main(int argc, char **argv)
 	printf("Path: path = %d, v1 = %d, v2 = %d\n", path, v1, v2);
 	printf("Inconflict: inconflict = %d\n", in_conflict);
 #endif
+
+	if(filein == NULL)
+	{
+		g = initialise_graph(rows, columns);
+		if(g == NULL)
+		{
+			fprintf(stderr, "Critical error! Memory allocation fail.\n");
+			return 1;
+		}
+		generate_graph(g, w1, w2);
+	}
+	else
+	{
+		FILE * in = fopen(filein, "r");
+		if(in == NULL)
+		{
+			fprintf(stderr, "Error! Incorrect file format.\nFor further info please refer to the manual.\n");
+			g = initialise_graph(rows, columns);
+			if(g == NULL)
+	                {
+        	                fprintf(stderr, "Critical error! Memory allocation fail.\n");
+                	        return 1;
+                	}
+                	generate_graph(g, w1, w2);	
+		}
+		else
+		{
+			if(fscanf(in, "%d %d\n", &rows_in, &columns_in) != 2)
+			{
+				fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
+                		g = initialise_graph(rows, columns);
+                		if(g == NULL)
+				{
+                    			fprintf(stderr, "Critical error! Memory allocation fail.\n");
+					return 1;
+                		}
+                		generate_graph(g, w1, w2);
+			}
+			else if(rows_in * columns_in <= 0 || rows_in * columns_in > 1000000)
+			{
+				fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
+                    		g = initialise_graph(rows, columns);
+                    		if(g == NULL)
+				{
+                        		fprintf(stderr, "Critical error! Memory allocation fail.\n");
+                        		return 1;
+                    		}
+                    		generate_graph(g, w1, w2);
+			}
+			else
+			{
+				g = initialise_graph(rows_in, columns_in);
+				if(g == NULL)
+				{
+                        		fprintf(stderr, "Critical error! Memory allocation fail.\n");
+                        		return 1;
+                    		}
+                    		if(read_failure = read_graph(g, in) == 1)
+				{
+                        		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
+                        		free_graph(g);
+                        		g = initialise_graph(rows, columns);
+                        		if(g == NULL)
+					{
+                            			fprintf(stderr, "Critical error! Memory allocation fail.\n");
+                            			return 1;
+                        		}
+                        		generate_graph(g, w1, w2);
+				}
+			}
+		}
+		fclose(in);
+	}
 	
+#ifdef DEBUG
+	print_graph(g);
+#endif
+
+	if(n > 1)
+	{
+		//split_graph call
+	}
+
+	if(connectivity == 1)
+	{
+		check_connectivity(g);
+	}
+
+	if(read_failure == 0)
+	{
+		rows = rows_in;
+		columns = columns_in;
+	}
+	if(v1 > (rows * columns - 1) || v2 > (rows * columns - 1))
+	{
+		path = 0;
+	}
+	if(path == 1)
+	{
+		find_path(g, v1, v2);
+	}
+
+	FILE * out = fopen(fileout, "w");
+	if(out == NULL)
+	{
+		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
+	}
+	write_graph(g, out);
+
+	free_graph(g);
+
 	return 0;
 }
 
