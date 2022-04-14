@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 						columns = atoi(argv[i]);
 						if(rows * columns == 0 || rows * columns > 1000000)
 						{
-							fprintf(stderr, "Error! The values of arguments for flag 'size' are outof the allowed range.\nFor further info please refer to the manual.\n");
+							fprintf(stderr, "Error! The values of arguments for flag 'size' are out of the allowed range.\nFor further info please refer to the manual.\n");
 							rows = 100;
 							columns = 100;
 							continue;
@@ -101,7 +101,7 @@ int main(int argc, char **argv)
                                                 }
                                                 else if(w1 == 0 || w1 > 100 || w2 == 0 || w2 > 100)
                                                 {
-                                                        fprintf(stderr, "Error! The values of arguments for flag 'weight' are outof the allowed range.\nFor further info please refer to the manual.\n");
+                                                        fprintf(stderr, "Error! The values of arguments for flag 'weight' are out of the allowed range.\nFor further info please refer to the manual.\n");
                         				w1 = 0.0 + DBL_MIN;
                         				w2 = 10.0;
 							continue;
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 					n = atoi(argv[i]);
 					if(n == 0 || n > 10)
 					{
-						fprintf(stderr, "Error! The values of arguments for flag 'segments' are outof the allowed range.\nFor further info please refer to the manual.\n");
+						fprintf(stderr, "Error! The values of arguments for flag 'segments' are out of the allowed range.\nFor further info please refer to the manual.\n");
 						n = 1;
 						continue;
 					}
@@ -205,7 +205,7 @@ int main(int argc, char **argv)
                                                 v2 = atoi(argv[i]);
                                                 if(v1 == v2)
                                                 {
-                                                        fprintf(stderr, "Error! The values of arguments for flag 'path' are outof the allowed range.\nFor further info please refer to the manual.\n");
+                                                        fprintf(stderr, "Error! The values of arguments for flag 'path' are out of the allowed range.\nFor further info please refer to the manual.\n");
                                                         v1 = -1;
                                                         v2 = -1;
                                                         continue;
