@@ -96,13 +96,15 @@ void split_graph(graph_t g, double w1, double w2)
 	path_t p;
 	colour_t colour;
 
+	srand(time(NULL));
+
 	//pick 2 random connected vertices with 3 edges that aren't in the same row or column
 	while(connected == 0)
 	{
 		do
 		{
 			count_edges = 0;
-			start_vertex = (g->rows * g->columns) * rand() / RAND_MAX;
+			start_vertex = rand() % (g->rows * g->columns);
 			for(i = 0; i < 4; i++)
 			{
 				if(g->v[start_vertex].neighbour[i] != -1)
@@ -116,7 +118,7 @@ void split_graph(graph_t g, double w1, double w2)
                	 	}
 
 			count_edges = 0;
-			finish_vertex = (g->rows * g->columns) * rand() / RAND_MAX;
+			finish_vertex = rand() % (g->rows * g->columns);
 			for(i = 0; i < 4; i++)
 			{
                         	if(g->v[finish_vertex].neighbour[i] != -1)
