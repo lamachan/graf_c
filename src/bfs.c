@@ -12,6 +12,7 @@ fifo_t initialise_fifo()
 	return q;
 }
 
+//put a new element into the queue
 void push_fifo(fifo_t q, int vertex)
 {
 	fifo_element_t *new_element = malloc(sizeof *new_element);
@@ -30,6 +31,7 @@ void push_fifo(fifo_t q, int vertex)
 	q->count++;
 }
 
+//take an element out of the queue (and return it)
 int pop_fifo(fifo_t q)
 {
 	int popped;
@@ -73,10 +75,12 @@ colour_t bfs(graph_t g, int start_vertex)
 	int i, current_vertex, neighbour, no_vertices = g->rows * g->columns;
 	colour_t colour = malloc(no_vertices * sizeof *colour);
 
+	//mark all vertices as white (undiscovered)
 	for(i = 0; i < no_vertices; i++)
 	{
 		colour[i] = white;
 	}
+	//mark the starting element as gray (discovered)
 	colour[start_vertex] = gray;
 	
 	fifo_t q = initialise_fifo();
@@ -87,7 +91,9 @@ colour_t bfs(graph_t g, int start_vertex)
 #ifdef DEBUG
 		print_fifo(q);
 #endif
+		//analyse the first vertex from the queue
 		current_vertex = pop_fifo(q);
+		//add all its undiscovered neighbours into the queue
 		for(i = 0; i < 4; i++)
 		{
 			neighbour = g->v[current_vertex].neighbour[i];
@@ -97,6 +103,7 @@ colour_t bfs(graph_t g, int start_vertex)
 				push_fifo(q, neighbour);
 			}
 		}
+		//mark the vertex as black (completed)
 		colour[current_vertex] = black;
 	}
 
@@ -110,6 +117,7 @@ void check_connectivity(graph_t g)
 	colour_t colour = bfs(g, 0);
 	int i;
 	
+	//check connectivity by analysing the colours of all vertices
 	for(i = 0; i < (g->rows * g->columns); i++)
 	{
 		if(colour[i] != black)

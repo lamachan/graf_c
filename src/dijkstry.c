@@ -21,6 +21,7 @@ pq_t initialise_pq(int size)
 	return q;
 }
 
+//fix the heap by moving the new bottom element up the heap to its correct position
 static void heap_up(pq_t q, int child)
 {
 	int parent, tmp;
@@ -45,6 +46,7 @@ static void heap_up(pq_t q, int child)
 	}
 }
 
+//fix the heap by moving the new root element down into its correct position
 static void heap_down(pq_t q)
 {
 	int parent = 0, tmp;
@@ -73,6 +75,8 @@ static void heap_down(pq_t q)
 	}
 }
 
+//put a new element into the queue or update an existing element's position in the queue
+//(the vertex with the shortest distance at the front)
 void push_pq(pq_t q, int vertex, double distance)
 {
 	q->distance[vertex] = distance;
@@ -85,6 +89,7 @@ void push_pq(pq_t q, int vertex, double distance)
 	heap_up(q, q->position[vertex]);
 }
 
+//take an element out of the queue (the vertex with the shortest distance) and return it
 int pop_pq(pq_t q)
 {
 	int popped = q->heap[0];
@@ -138,7 +143,9 @@ path_t dijkstry(graph_t g, int start_vertex)
 	p->predecessor = malloc(no_vertices * sizeof *(p->predecessor));
 	p->distance = malloc(no_vertices * sizeof *(p->distance));
 	
-	for(i = 0; i < (no_vertices); i++)
+	//set all predecessors as -1 (no predecessor)
+	//set all distances as +infinity (unknown distance)
+	for(i = 0; i < no_vertices; i++)
 	{
 		p->predecessor[i] = -1;
 		p->distance[i] = INFINITY;
@@ -146,12 +153,15 @@ path_t dijkstry(graph_t g, int start_vertex)
 
 	pq_t q = initialise_pq(no_vertices);
 
+	//put the start vertex into the queue
 	p->distance[start_vertex] = 0.0;
 	push_pq(q, start_vertex, p->distance[start_vertex]);
 
 	while(is_empty_pq(q) != 1)
 	{
+		//analyse the first vertex from the queue
 		current_vertex = pop_pq(q);
+		//check all its neighbours for a possible shorter path
 		for(i = 0; i < 4; i++)
 		{
 			neighbour = g->v[current_vertex].neighbour[i];
@@ -160,6 +170,7 @@ path_t dijkstry(graph_t g, int start_vertex)
 				new_distance = p->distance[current_vertex] + g->v[current_vertex].weight[i];
 				if(p->distance[neighbour] > new_distance)
 				{
+					//set a new shorter distance through the neighbour
 					p->distance[neighbour] = new_distance;
 					p->predecessor[neighbour] = current_vertex;
 					push_pq(q, neighbour, p->distance[neighbour]);
@@ -178,6 +189,7 @@ void find_path(graph_t g, int start_vertex, int finish_vertex)
 	path_t p = dijkstry(g, start_vertex);
 	if(p->predecessor[finish_vertex] == -1)
 	{
+		//start vertex and finish vertex are disconnected
 		printf("The verices %d and %d are disconnected. There is no path between them.\n", start_vertex, finish_vertex);
 		
 		free(p->predecessor);
@@ -191,6 +203,7 @@ void find_path(graph_t g, int start_vertex, int finish_vertex)
 	int no_vertices = 0;
 	int current_vertex = finish_vertex;
 
+	//rewrite the shortest path into a more comfortable to work with format
 	while(current_vertex != start_vertex)
 	{
 		good_path[no_vertices++] = current_vertex;
@@ -198,6 +211,7 @@ void find_path(graph_t g, int start_vertex, int finish_vertex)
 	}
 	good_path[no_vertices] = current_vertex;
 
+	//print the shortest path
 	printf("Path between %d and %d: ", start_vertex, finish_vertex);
 	for(i = no_vertices; i > 0; i--)
 	{

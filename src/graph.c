@@ -14,6 +14,7 @@ graph_t initialise_graph(int rows, int columns)
 	g->columns = columns;
 	g->v = malloc(rows * columns * sizeof *(g->v));
 
+	//make a graph without edges
 	for(i = 0; i < rows * columns; i++)
 	{
 		for(j = 0; j < 4; j++)
@@ -33,9 +34,11 @@ void generate_graph(graph_t g, double w1, double w2)
 
 	srand(time(NULL));
 
+	//fill the graph with "rectangular" edges with random weights
 	for(i = 0; i < (g->rows * g->columns); i++)
 	{
-		if(current_rows != 0)	//(i - columns) - upper neighbour
+		//vertex not in the topmost row
+		if((i / g->columns) != 0)	//(i - columns) - upper neighbour
                 {
                         if(g->v[i].neighbour[0] == -1)
 			{
@@ -46,7 +49,8 @@ void generate_graph(graph_t g, double w1, double w2)
 				g->v[i-g->columns].weight[3] = w;
 			}
                 }
-		if(current_columns != 0)	//(i - 1) - left neighbour
+		//vertex not in the leftmost column
+		if((i % g->columns) != 0)	//(i - 1) - left neighbour
                 {
                         if(g->v[i].neighbour[1] == -1)
                         {
@@ -57,7 +61,8 @@ void generate_graph(graph_t g, double w1, double w2)
 				g->v[i-1].weight[2] = w;
                         }
                 }
-		if(current_columns != (g->columns - 1))	//(i + 1) - right neighbour
+		//vertex not in the righmost column
+		if((i % g->columns) != (g->columns - 1))	//(i + 1) - right neighbour
                 {
                         if(g->v[i].neighbour[2] == -1)
                         {
@@ -68,7 +73,8 @@ void generate_graph(graph_t g, double w1, double w2)
 				g->v[i+1].weight[1] = w;
                         }
                 }
-                if(current_rows != (g->rows - 1))	//(i + columns) - lower neighbour
+		//vertex not in the downmost row
+                if((i / g->columns) != (g->rows - 1))	//(i + columns) - lower neighbour
                 {
                         if(g->v[i].neighbour[3] == -1)
                         {
@@ -79,11 +85,6 @@ void generate_graph(graph_t g, double w1, double w2)
 				g->v[i+g->columns].weight[0] = w;
                         }
                 }
-
-                current_rows = (i+1) / (g->columns);
-
-                current_columns++;
-                current_columns = current_columns % (g->columns);
 	}
 }
 
@@ -95,6 +96,7 @@ void split_graph(graph_t g, double w1, double w2)
 	path_t p;
 	colour_t colour;
 
+	//pick 2 random connected vertices with 3 edges that aren't in the same row or column
 	while(connected == 0)
 	{
 		do
@@ -137,6 +139,7 @@ void split_graph(graph_t g, double w1, double w2)
 		free(colour);
 	}
 	
+	//find the shortest path between the 2 vertices
 	p = dijkstry(g, start_vertex);
 	int *good_path = malloc((g->rows * g->columns) * sizeof *good_path);
 	int no_vertices = 0;
@@ -148,6 +151,7 @@ void split_graph(graph_t g, double w1, double w2)
        	}
        	good_path[no_vertices] = current_vertex;
 
+	//for all vertices from the path, cut all right and bottom edges
 	for(i = no_vertices; i >= 0; i--)
 	{
 		current_vertex = good_path[i];
@@ -170,6 +174,7 @@ void split_graph(graph_t g, double w1, double w2)
 
 	double w = 0;
 
+	//for all vertices that became entirely disconnected, restore 1 possible edge
 	for(i = 0; i < (g->rows * g->columns); i++)
 	{
 		count_edges = 0;
@@ -227,27 +232,32 @@ static int add_neighbour(graph_t g, int vertex, int neighbour, double weight)
 {
 	if(neighbour < 0 || neighbour >= (g->rows * g->columns) || neighbour == vertex || weight <= 0.0)
 	{
+		//neighbour not allowed
 		return -1;
 	}
 
+	//upper neighbour
 	if(neighbour == (vertex - g->columns))
 	{
 		g->v[vertex].neighbour[0] = neighbour;
 		g->v[vertex].weight[0] = weight;
 		return 0;
 	}
+	//left neighbour
 	if(neighbour == (vertex - 1))
 	{
 		g->v[vertex].neighbour[1] = neighbour;
 		g->v[vertex].weight[1] = weight;
 		return 1;
 	}
+	//right neighbour
 	if(neighbour == (vertex + 1))
 	{
 		g->v[vertex].neighbour[2] = neighbour;
 		g->v[vertex].weight[2] = weight;
 		return 2;
 	}
+	//lower neighbour
 	if(neighbour == (vertex + g->columns))
 	{
 		g->v[vertex].neighbour[3] = neighbour;
@@ -265,20 +275,24 @@ int read_graph(graph_t g, FILE * in)
 	int i;
 	int c = 0;
 
+	//read all edges from the input file
         for(i = 0; i < (g->rows * g->columns); i++)
         {
 		while(c != '\n' && c != EOF)
 		{
 			if(fscanf(in, "%d :%lf", &neighbour, &weight) != 2)
 			{
+				//invalid input file format
 				return 1;
 			}
 			if(add_neighbour(g, i, neighbour, weight) == -1)
 			{
+				//invalid input file format
 				return 1;
 			}
 			if((c = fgetc(in)) == EOF && i != (g->rows * g->columns - 1))
 			{
+				//invalid input file format
 				return 1;
 			}
 			if(c == ' ' && (c = fgetc(in)) != '\n')

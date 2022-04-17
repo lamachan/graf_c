@@ -9,8 +9,11 @@
 #include <math.h>
 #include <float.h>
 
+//avaliable arguments short description
 void help();
+//check if the argument is a natural number (positive int)
 int is_int(char* argument);
+//check if the argument is a positive double
 int is_double(char* argument);
 
 int main(int argc, char **argv)
@@ -28,6 +31,7 @@ int main(int argc, char **argv)
 	graph_t g = NULL;
 	int i;
 
+	//check the user-provided arguments
 	if(argc > 1)
 	{
 		for(i = 1; i < argc; i++)
@@ -248,7 +252,8 @@ int main(int argc, char **argv)
 	printf("Path: path = %d, v1 = %d, v2 = %d\n", path, v1, v2);
 	printf("Inconflict: inconflict = %d\n", in_conflict);
 #endif
-
+	
+	//input file has not been provided
 	if(filein == NULL)
 	{
 		g = initialise_graph(rows, columns);
@@ -259,9 +264,11 @@ int main(int argc, char **argv)
 		}
 		generate_graph(g, w1, w2);
 	}
+	//input file has been provided
 	else
 	{
 		FILE * in = fopen(filein, "r");
+		//invalid input file
 		if(in == NULL)
 		{
 			fprintf(stderr, "Error! Incorrect file format.\nFor further info please refer to the manual.\n");
@@ -273,10 +280,12 @@ int main(int argc, char **argv)
                 	}
                 	generate_graph(g, w1, w2);	
 		}
+		//valid input file
 		else
 		{
 			if(fscanf(in, "%d %d\n", &rows_in, &columns_in) != 2)
 			{
+				//invalid input file rows and columns format
 				fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
                 		g = initialise_graph(rows, columns);
                 		if(g == NULL)
@@ -288,6 +297,7 @@ int main(int argc, char **argv)
 			}
 			else if(rows_in * columns_in <= 0 || rows_in * columns_in > 1000000)
 			{
+				//invalid input file rows and columns format
 				fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
                     		g = initialise_graph(rows, columns);
                     		if(g == NULL)
@@ -297,6 +307,7 @@ int main(int argc, char **argv)
                     		}
                     		generate_graph(g, w1, w2);
 			}
+			//valid input file rows and columns format
 			else
 			{
 				g = initialise_graph(rows_in, columns_in);
@@ -307,6 +318,7 @@ int main(int argc, char **argv)
                     		}
                     		if(read_failure = read_graph(g, in) == 1)
 				{
+					//invalid input file edges format
                         		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
                         		free_graph(g);
                         		g = initialise_graph(rows, columns);
@@ -323,9 +335,11 @@ int main(int argc, char **argv)
 	}
 	
 #ifdef DEBUG_GRAPH
+	//before splitting
 	print_graph(g);
 #endif
 
+	//split graph into n-segments
 	if(n > 1)
 	{
 		for(i = 1; i < n; i++)
@@ -335,9 +349,11 @@ int main(int argc, char **argv)
 	}
 
 #ifdef DEBUG_GRAPH
+	//after splitting
 	print_graph(g);
 #endif
 
+	//check connectivity
 	if(connectivity == 1)
 	{
 		check_connectivity(g);
@@ -352,11 +368,13 @@ int main(int argc, char **argv)
 	{
 		path = 0;
 	}
+	//find path
 	if(path == 1)
 	{
 		find_path(g, v1, v2);
 	}
 
+	//print graph into an output file
 	FILE * out = fopen(fileout, "w");
 	if(out == NULL)
 	{
@@ -365,6 +383,7 @@ int main(int argc, char **argv)
 	write_graph(g, out);
 	fclose(out);
 
+	//free allocated memory for the graph
 	free_graph(g);
 
 	return 0;
