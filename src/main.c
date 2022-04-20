@@ -1,3 +1,4 @@
+#include "arguments.h"
 #include "graph.h"
 #include "bfs.h"
 #include "dijkstry.h"
@@ -5,16 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <math.h>
 #include <float.h>
-
-//avaliable arguments short description
-void help();
-//check if the argument is a natural number (positive int)
-int is_int(char* argument);
-//check if the argument is a positive double
-int is_double(char* argument);
 
 int main(int argc, char **argv)
 {
@@ -41,7 +34,7 @@ int main(int argc, char **argv)
 				i++;
 				if(i >= argc || is_int(argv[i]) == 0)
 				{
-					fprintf(stderr, "Error! The flag 'size' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
+					format_error(argv[i-1]);
 					i--;
 					continue;
 				}
@@ -51,8 +44,8 @@ int main(int argc, char **argv)
 					i++;
 					if(i >= argc || is_int(argv[i]) == 0)
                 	                {
-                        	                fprintf(stderr, "Error! The flag 'size' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
-                                        	i--;
+                                        	format_error(argv[i-2]);
+						i--;
 						rows = 100;
                                         	continue;
                                 	}
@@ -61,7 +54,7 @@ int main(int argc, char **argv)
 						columns = atoi(argv[i]);
 						if(rows * columns == 0 || rows * columns > 1000000)
 						{
-							fprintf(stderr, "Error! The values of arguments for flag 'size' are out of the allowed range.\nFor further info please refer to the manual.\n");
+							range_error(argv[i-2]);
 							rows = 100;
 							columns = 100;
 							continue;
@@ -78,8 +71,8 @@ int main(int argc, char **argv)
 				i++;
                            	if(i >= argc || is_double(argv[i]) == 0)
                                 {
-                                        fprintf(stderr, "Error! The flag 'weight' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
-                                        i--;
+                                        format_error(argv[i-1]);
+					i--;
                                         continue;
                                 }
                                 else
@@ -88,8 +81,8 @@ int main(int argc, char **argv)
                                         i++;
                                         if(i >= argc || is_double(argv[i]) == 0)
                                         {
-                                                fprintf(stderr, "Error! The flag 'weight' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
-                                                i--;
+                                                format_error(argv[i-2]);
+						i--;
                                                 w1 = 0.0 + DBL_MIN;
                                                 continue;
                                         }
@@ -98,15 +91,15 @@ int main(int argc, char **argv)
                                                 w2 = atof(argv[i]);
                                                 if(w1 >= w2)
                                                 {
-							fprintf(stderr, "Error! The flag 'weight' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
-                                                        w1 = 0.0 + DBL_MIN;
+                                                        range_error(argv[i-2]);
+							w1 = 0.0 + DBL_MIN;
                                                         w2 = 10.0;
                                                         continue;
                                                 }
                                                 else if(w1 == 0 || w1 > 100 || w2 == 0 || w2 > 100)
                                                 {
-                                                        fprintf(stderr, "Error! The values of arguments for flag 'weight' are out of the allowed range.\nFor further info please refer to the manual.\n");
-                        				w1 = 0.0 + DBL_MIN;
+                        				range_error(argv[i-2]);
+							w1 = 0.0 + DBL_MIN;
                         				w2 = 10.0;
 							continue;
                                                 }
@@ -123,7 +116,7 @@ int main(int argc, char **argv)
 				i++;
 				if(i >= argc || is_int(argv[i]) == 0)
 				{
-					fprintf(stderr, "Error! The flag 'segments' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
+					format_error(argv[i-1]);
 					i--;
 					continue;
 				}
@@ -132,7 +125,7 @@ int main(int argc, char **argv)
 					n = atoi(argv[i]);
 					if(n == 0 || n > 10)
 					{
-						fprintf(stderr, "Error! The values of arguments for flag 'segments' are out of the allowed range.\nFor further info please refer to the manual.\n");
+						range_error(argv[i-1]);
 						n = 1;
 						continue;
 					}
@@ -147,12 +140,12 @@ int main(int argc, char **argv)
 				i++;
 				if(i >= argc)
 				{
-					fprintf(stderr, "Error! The flag 'in' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
+					format_error(argv[i-1]);
 					continue;
 				}
 				else if(strstr(argv[i], "--"))
 				{
-					fprintf(stderr, "Error! The flag 'in' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
+					format_error(argv[i-1]);
 					i--;
 					continue;
 				}
@@ -166,13 +159,13 @@ int main(int argc, char **argv)
 				i++;
                                 if(i >= argc)
                                 {
-                                        fprintf(stderr, "Error! The flag 'out' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
-                                        continue;
+                                        format_error(argv[i-1]);
+					continue;
                                 }
 				else if(strstr(argv[i], "--"))
                                 {
-                                        fprintf(stderr, "Error! The flag 'in' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
-                                        i--;
+                                        format_error(argv[i-1]);
+					i--;
                                         continue;
                                 }
                                 else
@@ -189,8 +182,8 @@ int main(int argc, char **argv)
 				i++;
                                 if(i >= argc || is_int(argv[i]) == 0)
                                 {
-                                        fprintf(stderr, "Error! The flag 'path' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
-                                        i--;
+                                        format_error(argv[i-1]);
+					i--;
                                         continue;
                                 }
                                 else
@@ -199,8 +192,8 @@ int main(int argc, char **argv)
                                         i++;
                                         if(i >= argc || is_int(argv[i]) == 0)
                                         {
-                                                fprintf(stderr, "Error! The flag 'path' does not accept the given format of arguments.\nFor further info please refer to the manual.\n");
-                                                i--;
+                                                format_error(argv[i-2]);
+						i--;
                                                 v1 = -1;
                                                 continue;
                                         }
@@ -209,8 +202,8 @@ int main(int argc, char **argv)
                                                 v2 = atoi(argv[i]);
                                                 if(v1 == v2)
                                                 {
-                                                        fprintf(stderr, "Error! The values of arguments for flag 'path' are out of the allowed range.\nFor further info please refer to the manual.\n");
-                                                        v1 = -1;
+                                                        range_error(argv[i-2]);
+							v1 = -1;
                                                         v2 = -1;
                                                         continue;
                                                 }
@@ -228,7 +221,7 @@ int main(int argc, char **argv)
                         }
 			else if(strstr(argv[i], "--") != NULL)
 			{
-				fprintf(stderr, "Error! The flag '%s' does not exist.\nFor further info please refer to the manual.\n", argv[i]);
+				unknown_arg_error(argv[i]);
 			}
 			else
 			{
@@ -239,7 +232,12 @@ int main(int argc, char **argv)
 
 	if(in_conflict == 1 && filein != NULL)
 	{
-        	fprintf(stderr, "Error! The flags 'size', 'weight' and 'segments' are mutually exclusive with the flag 'in'.\nFor further info please refer to the manual.\n");
+		conflict_error("--size", "--weight", "--segments", "--in");
+		rows = 100;
+		columns = 100;
+		w1 = 0.0 + DBL_MIN;
+		w2 = 10.0;
+		n = 1;
         }
 	
 #ifdef DEBUG
@@ -259,7 +257,7 @@ int main(int argc, char **argv)
 		g = initialise_graph(rows, columns);
 		if(g == NULL)
 		{
-			fprintf(stderr, "Critical error! Memory allocation fail.\n");
+			memory_error();
 			return 1;
 		}
 		generate_graph(g, w1, w2);
@@ -271,12 +269,12 @@ int main(int argc, char **argv)
 		//invalid input file
 		if(in == NULL)
 		{
-			fprintf(stderr, "Error! Incorrect file format.\nFor further info please refer to the manual.\n");
+			file_error(filein);
 			g = initialise_graph(rows, columns);
 			if(g == NULL)
 	                {
-        	                fprintf(stderr, "Critical error! Memory allocation fail.\n");
-                	        return 1;
+                	        memory_error();
+				return 1;
                 	}
                 	generate_graph(g, w1, w2);	
 		}
@@ -286,11 +284,11 @@ int main(int argc, char **argv)
 			if(fscanf(in, "%d %d\n", &rows_in, &columns_in) != 2)
 			{
 				//invalid input file rows and columns format
-				fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
-                		g = initialise_graph(rows, columns);
+                		file_error(filein);
+				g = initialise_graph(rows, columns);
                 		if(g == NULL)
 				{
-                    			fprintf(stderr, "Critical error! Memory allocation fail.\n");
+					memory_error();
 					return 1;
                 		}
                 		generate_graph(g, w1, w2);
@@ -298,12 +296,12 @@ int main(int argc, char **argv)
 			else if(rows_in * columns_in <= 0 || rows_in * columns_in > 1000000)
 			{
 				//invalid input file rows and columns format
-				fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
-                    		g = initialise_graph(rows, columns);
+                    		file_error(filein);
+				g = initialise_graph(rows, columns);
                     		if(g == NULL)
 				{
-                        		fprintf(stderr, "Critical error! Memory allocation fail.\n");
-                        		return 1;
+                        		memory_error();
+					return 1;
                     		}
                     		generate_graph(g, w1, w2);
 			}
@@ -313,19 +311,19 @@ int main(int argc, char **argv)
 				g = initialise_graph(rows_in, columns_in);
 				if(g == NULL)
 				{
-                        		fprintf(stderr, "Critical error! Memory allocation fail.\n");
-                        		return 1;
+                        		memory_error();
+					return 1;
                     		}
                     		if(read_failure = read_graph(g, in) == 1)
 				{
 					//invalid input file edges format
-                        		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
-                        		free_graph(g);
+                        		file_error(filein);
+					free_graph(g);
                         		g = initialise_graph(rows, columns);
                         		if(g == NULL)
 					{
-                            			fprintf(stderr, "Critical error! Memory allocation fail.\n");
-                            			return 1;
+                            			memory_error();
+						return 1;
                         		}
                         		generate_graph(g, w1, w2);
 				}
@@ -366,6 +364,7 @@ int main(int argc, char **argv)
 	}
 	if(v1 > (rows * columns - 1) || v2 > (rows * columns - 1))
 	{
+		range_error("--path");
 		path = 0;
 	}
 	//find path
@@ -378,7 +377,7 @@ int main(int argc, char **argv)
 	FILE * out = fopen(fileout, "w");
 	if(out == NULL)
 	{
-		fprintf(stderr, "Error! Incorrect file format. For further info please refer to the manual.\n");
+		file_error(fileout);
 	}
 	write_graph(g, out);
 	fclose(out);
@@ -388,54 +387,3 @@ int main(int argc, char **argv)
 
 	return 0;
 }
-
-void help()
-{
-    printf("HELP\nGraf - program generujacy i analizujacy grafy\n");
-    printf("--size rows columns - rozmiar generowanego grafu\n\tmax rozmiar row x column < 10 ^ 6\n\tdomyslnie: row = 100 column = 100\n");
-    printf("--weight w1 w2 - zakres losowanych wag dla krawedzi\n\tw1, w2 > 0.0; w1,w2 <= 100.0\n\tdomyslnie: w1 ~ 0.0 w2 = 10.0\n");
-    printf("--segments n - liczba segmentow, na ktore podzielony jest graf\n\tn <= 10\n\tdomyslnie: n = 1\n");
-    printf("--in filename - plik wejsciowy\n");
-    printf("--out filename - plik wyjsciowy, do ktorego zostanie zapisany graf\n\tdomyslnie: filename = graph.output\n");
-    printf("--connectivity - sprawdzenie spojnosci grafu\n");
-    printf("--path v1 v2 - znalezienie najkrotszej sciezki od wierzcholka v1 do v2\n");
-    printf("--help - wyswietlenie tej instrukcji\n");
-}
-
-int is_int(char* argument)
-{
-    int i;
-
-    for (i = 0; i < strlen(argument); i++)
-    {
-        if (!isdigit(argument[i]))
-        {
-            return 0;
-        }
-    }
-
-    return 1;
-}
-
-int is_double(char* argument)
-{
-    int i, dot_count = 0;
-
-    for (i = 0; i < strlen(argument); i++)
-    {
-        if (!isdigit(argument[i]))
-        {
-            if (argument[i] == '.' && dot_count == 0)
-            {
-                dot_count++;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-    }
-
-    return 1;
-}
-
