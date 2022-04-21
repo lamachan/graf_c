@@ -1,3 +1,7 @@
+//Weronika Zbierowska, Daria Danieluk
+//był problem z plikami testowymi, potwierdziłyśmy, że chodziło o CRLF
+//pliki zostały zmodyfikowane za pomocą tr -d '\r' i działają prawidłowo
+
 #include "arguments.h"
 #include "graph.h"
 #include "bfs.h"

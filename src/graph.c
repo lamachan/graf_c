@@ -232,9 +232,15 @@ void split_graph(graph_t g, double w1, double w2)
 
 static int add_neighbour(graph_t g, int vertex, int neighbour, double weight)
 {
+#ifdef DEBUG_GRAPH
+	printf("vertex: %d, neighbour: %d, weight: %g\n", vertex, neighbour, weight);
+#endif
 	if(neighbour < 0 || neighbour >= (g->rows * g->columns) || neighbour == vertex || weight <= 0.0)
 	{
 		//neighbour not allowed
+#ifdef DEBUG_GRAPH
+		printf("Error found here!\n");
+#endif
 		return -1;
 	}
 
@@ -272,8 +278,8 @@ static int add_neighbour(graph_t g, int vertex, int neighbour, double weight)
 
 int read_graph(graph_t g, FILE * in)
 {
-        int neighbour;
-        double weight;
+        int neighbour = 0;
+        double weight = 0.0;
 	int i;
 	int c = 0;
 
@@ -287,6 +293,9 @@ int read_graph(graph_t g, FILE * in)
 				//invalid input file format
 				return 1;
 			}
+#ifdef DEBUG_GRAPH
+			printf("Neighbour: %d, weight: %g\n", neighbour, weight);
+#endif
 			if(add_neighbour(g, i, neighbour, weight) == -1)
 			{
 				//invalid input file format

@@ -2,10 +2,10 @@ objects = main.o graph.o bfs.o dijkstry.o arguments.o
 
 default: $(objects)
 	cc $(objects)
-debug: $(objects)
-	cc $(objects) -DDEBUG
-debug_graph: $(objects)
-	cc $(objects) -DDEBUG_GRAPH
+debug:
+	cc main.c arguments.c graph.c dijkstry.c bfs.c -DDEBUG
+debug_graph:
+	cc main.c arguments.c graph.c dijkstry.c bfs.c -DDEBUG_GRAPH
 main.o: main.c graph.h bfs.h dijkstry.h
 	cc -c main.c
 graph.o: graph.c graph.h
