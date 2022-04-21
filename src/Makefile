@@ -1,4 +1,4 @@
-objects = main.o graph.o bfs.o dijkstry.o
+objects = main.o graph.o bfs.o dijkstry.o arguments.o
 
 default: $(objects)
 	cc $(objects)
@@ -14,6 +14,8 @@ bfs.o: bfs.c bfs.h graph.h
 	cc -c bfs.c
 dijkstry.o: dijkstry.c dijkstry.h graph.h
 	cc -c dijkstry.c
+arguments.o: arguments.c arguments.h
+	cc -c arguments.c
 
 .PHONY: clean
 
